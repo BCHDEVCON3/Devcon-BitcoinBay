@@ -1,5 +1,6 @@
 const BITBOXSDK = require('bitbox-sdk');
 const slpjs = require('slpjs');
+const BigNumber = require('bignumber.js');
 const {
   Contract,
   SignatureTemplate,
@@ -23,10 +24,16 @@ const bitboxNetwork = new slpjs.BitboxNetwork(BITBOX);
 
   // Derive alice's public key and public key hash
   const alicePk = BITBOX.ECPair.toPublicKey(keypair);
-  const alicePkh = BITBOX.Crypto.hash160(alicePk);
-
-  const aliceAddr = BITBOX.HDNode.toCashAddress(account);
   console.log(alicePk);
+  const alicePkh = BITBOX.Crypto.hash160(alicePk);
   console.log(alicePkh);
+  const aliceAddr = BITBOX.HDNode.toCashAddress(account);
   console.log(aliceAddr);
+
+  const artifact = CashCompiler.compileFile(path.join(__dirname, 'SLPGenesis.cash'));
+  const provider = new ElectrumNetworkProvider(NETWORK);
+
+  const contract = new Contract(artifact, [alicePkh], provider);
+  console.log('contract address:', contract.address);
+  console.log('contract balance:', await contract.getBalance());
 })();

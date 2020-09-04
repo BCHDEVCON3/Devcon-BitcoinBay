@@ -6,6 +6,7 @@
   "author": "lightswarm124 <lightswarm@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "bignumber.js": "^9.0.0",
     "bitbox-sdk": "^8.11.2",
     "bitcore-lib-cash": "^8.22.2",
     "cashscript": "^0.5.1",
