@@ -1,0 +1,35 @@
+pragma cashscript ^0.4.0;
+
+contract SLPGenesis(bytes20 ownerHash) {
+  function reclaim(pubkey pk, sig s) {
+    require(hash160(pk) == ownerHash);
+    require(checkSig(s, pk));
+  }
+
+  function genesisSLP(pubkey pk, sig s, bytes name, bytes ticker, bytes)
+}
+/*
+            name,
+            ticker,
+            initialTokenQtyBN,
+            documentUri,
+            documentHash,
+            decimals,
+            tokenReceiverAddress,
+            batonReceiverAddress,
+            bchChangeReceiverAddress,
+            balances!.nonSlpUtxos,
+
+FORMAT: 
+            OP_RETURN
+<lokad_id: 'SLP\x00'> (4 bytes, ascii)1
+<token_type: 1> (1 to 2 byte integer)
+<transaction_type: 'GENESIS'> (7 bytes, ascii)
+<token_ticker> (0 to ∞ bytes, suggested utf-8)
+<token_name> (0 to ∞ bytes, suggested utf-8)
+<token_document_url> (0 to ∞ bytes, suggested ascii)
+<token_document_hash> (0 bytes or 32 bytes)
+<decimals> (1 byte in range 0x00-0x09)
+<mint_baton_vout> (0 bytes, or 1 byte in range 0x02-0xff)
+<initial_token_mint_quantity> (8 byte integer)
+*/
