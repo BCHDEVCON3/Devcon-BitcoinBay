@@ -29,12 +29,13 @@ contract SLPGenesis(bytes20 ownerHash) {
     int changeAmount = intValue - dust - minerFee;
 
     bytes32 initialReceiver = new OutputP2SH(bytes8(dust), hash160(tx.bytecode));
+    bytes32 mintReceiver = new OutputP2SH(bytes8(dust), hash160(tx.bytecode));
 
     if (changeAmount >= (minerFee/2)) {
       bytes32 change = new OutputP2SH(bytes8(changeAmount), hash160(tx.bytecode));
-      require(tx.hashOutputs == hash256(genesis_return + initialReceiver + change));
+      require(tx.hashOutputs == hash256(genesis_return + initialReceiver + mintReceiver + change));
     } else {
-      require(tx.hashOutputs == hash256(genesis_return + initialReceiver));
+      require(tx.hashOutputs == hash256(genesis_return + initialReceiver + mintReceiver));
     }
   }
 }
