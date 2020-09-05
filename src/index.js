@@ -48,18 +48,19 @@ let minerFee = 2000;
   console.log('contract address:', contract.address);
   const balance = await contract.getBalance();
   console.log('contract balance:', balance);
-  const changeAmount = balance - dust - minerFee;
+  const changeAmount = balance - (dust * 2) - minerFee;
   console.log(changeAmount);
 
   console.log("OP Count", contract.opcount);
   console.log("Bytesize", contract.bytesize);
 
-
   const tx = await contract.functions
+/*
       .reclaim(alicePk, new SignatureTemplate(keypair))
       .to(aliceAddr, balance - 600)
       .meep()
-/*    .genesisSLP(
+*/
+    .genesisSLP(
       alicePk,
       new SignatureTemplate(keypair),
       token_ticker,
@@ -82,8 +83,9 @@ let minerFee = 2000;
     ])
     .to(contract.address, dust)
     .to(contract.address, changeAmount)
-//    .withHardcodedFee(2000)
-    .meep();
-*/
+    .withHardcodedFee(2000)
+    .withMinChange(1000)
+    .send();
+
   console.log('transaction details:', stringify(tx));
 })();

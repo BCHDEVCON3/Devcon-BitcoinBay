@@ -26,12 +26,12 @@ contract SLPGenesis(bytes20 ownerHash) {
     int minerFee = 2000;
     int intValue = int(bytes(tx.value));
 
-    int changeAmount = intValue - dust - minerFee;
+    int changeAmount = intValue - dust - dust - minerFee;
 
     bytes32 initialReceiver = new OutputP2SH(bytes8(dust), hash160(tx.bytecode));
     bytes32 mintReceiver = new OutputP2SH(bytes8(dust), hash160(tx.bytecode));
 
-    if (changeAmount >= (minerFee/2)) {
+    if (changeAmount >= (minerFee)) {
       bytes32 change = new OutputP2SH(bytes8(changeAmount), hash160(tx.bytecode));
       require(tx.hashOutputs == hash256(genesis_return + initialReceiver + mintReceiver + change));
     } else {

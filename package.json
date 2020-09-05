@@ -5,6 +5,9 @@
   "repository": "https://github.com/BCHDEVCON3/Devcon-BitcoinBay",
   "author": "lightswarm124 <lightswarm@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "node src/index.js"
+  },
   "dependencies": {
     "@bitauth/libauth": "^1.17.1",
     "bignumber.js": "^9.0.0",
