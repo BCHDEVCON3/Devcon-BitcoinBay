@@ -6,7 +6,7 @@ contract SLPGenesis(bytes20 ownerHash) {
     require(checkSig(s, pk));
   }
 
-  function genesisSLP(pubkey pk, sig s, bytes token_ticker, bytes token_name, bytes token_document_url, bytes1 decimals, bytes1 mint_baton_vout, bytes8 initial_token_mint_quantity) {
+  function genesisSLP(pubkey pk, sig s, bytes token_ticker, bytes token_name, bytes token_document_url, bytes token_document_hash, bytes1 decimals, bytes1 mint_baton_vout, bytes8 initial_token_mint_quantity) {
     require(hash160(pk) == ownerHash);
     require(checkSig(s, pk));
 
@@ -17,6 +17,7 @@ contract SLPGenesis(bytes20 ownerHash) {
       token_ticker,
       token_name,
       token_document_url,
+      token_document_hash,
       decimals,
       mint_baton_vout,
       initial_token_mint_quantity
