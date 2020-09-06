@@ -1,6 +1,6 @@
 const BITBOXSDK = require('bitbox-sdk');
 const { stringify } = require('@bitauth/libauth');
-
+const BCHJS = require("@chris.troutner/bch-js")
 const slpjs = require('slpjs');
 const {
   Contract,
@@ -10,14 +10,16 @@ const {
 } = require('cashscript');
 const path = require('path');
 
-const BITBOX = new BITBOXSDK.BITBOX({ restURL: 'https://rest.bitcoin.com/v2/' });
+let bchjs = new BCHJS({ restURL: 'https://tapi.fullstack.cash/v3/' })
+
+const BITBOX = new BITBOXSDK.BITBOX({ restURL: 'https://trest.bitcoin.com/v2/' });
 const NETWORK = "testnet";
 
 const bitboxNetwork = new slpjs.BitboxNetwork(BITBOX);
 
-let token_ticker = "bbay";
-let token_name = "bitcoinbay";
-let token_document_url = "blockhack.ca";
+let token_ticker = "BCH";
+let token_name = "BCHDevCon";
+let token_document_url = "devcon.cash";
 let token_document_hash = null;
 let decimals = '0x00';
 let mint_baton_vout = '0x02';
@@ -46,6 +48,8 @@ let minerFee = 2000;
 
   const contract = new Contract(artifact, [alicePkh], provider);
   console.log('contract address:', contract.address);
+  const contractToSLPAddr = bchjs.SLP.Address.toSLPAddress(contract.address);
+  console.log(contractToSLPAddr);
   const balance = await contract.getBalance();
   console.log('contract balance:', balance);
   const changeAmount = balance - (dust * 2) - minerFee;
@@ -54,12 +58,14 @@ let minerFee = 2000;
   console.log("OP Count", contract.opcount);
   console.log("Bytesize", contract.bytesize);
 
+  const remainder = balance - dust - dust - minerFee;
+
   const tx = await contract.functions
+
+    .reclaim(alicePk, new SignatureTemplate(keypair))
+//    .to(aliceAddr, balance - 600)
+//    .meep()
 /*
-      .reclaim(alicePk, new SignatureTemplate(keypair))
-      .to(aliceAddr, balance - 600)
-      .meep()
-*/
     .genesisSLP(
       alicePk,
       new SignatureTemplate(keypair),
@@ -70,6 +76,7 @@ let minerFee = 2000;
       mint_baton_vout,
       initial_token_mint_quantity
     )
+*/
     .withOpReturn([
       '0x534c5000',
       '0x01',
@@ -77,15 +84,18 @@ let minerFee = 2000;
       token_ticker,
       token_name,
       token_document_url,
+      '',                                         //document hash
       decimals,
       mint_baton_vout,
       initial_token_mint_quantity
     ])
-    .to(contract.address, dust)
-    .to(contract.address, changeAmount)
-    .withHardcodedFee(2000)
-    .withMinChange(1000)
-    .send();
+    .to(contractToSLPAddr, dust)
+    .to(contractToSLPAddr, dust)
+//    .to(contract.address, remainder)
+//    .to(contract.address, changeAmount)
+//    .withHardcodedFee(2000)
+//    .withMinChange(2000)
+    .meep();
 
   console.log('transaction details:', stringify(tx));
 })();
