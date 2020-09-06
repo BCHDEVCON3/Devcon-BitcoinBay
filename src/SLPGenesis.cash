@@ -1,0 +1,42 @@
+pragma cashscript ^0.5.0;
+
+contract SLPGenesis(bytes20 ownerHash) {
+  function reclaim(pubkey pk, sig s) {
+    require(hash160(pk) == ownerHash);
+    require(checkSig(s, pk));
+  }
+
+  function genesisSLP(pubkey pk, sig s, bytes token_ticker, bytes token_name, bytes token_document_url, bytes token_document_hash, bytes1 decimals, bytes1 mint_baton_vout, bytes8 initial_token_mint_quantity) {
+    require(hash160(pk) == ownerHash);
+    require(checkSig(s, pk));
+
+    bytes genesis_return = new OutputNullData([
+      0x534c5000,
+      0x01,
+      bytes('GENESIS'),
+      token_ticker,
+      token_name,
+      token_document_url,
+      token_document_hash,
+      decimals,
+      mint_baton_vout,
+      initial_token_mint_quantity
+    ]);
+
+    int dust = 546;
+    int minerFee = 2000;
+    int intValue = int(bytes(tx.value));
+
+    int changeAmount = intValue - dust - dust - minerFee;
+
+    bytes32 initialReceiver = new OutputP2SH(bytes8(dust), hash160(tx.bytecode));
+    bytes32 mintReceiver = new OutputP2SH(bytes8(dust), hash160(tx.bytecode));
+
+    if (changeAmount >= (minerFee)) {
+      bytes32 change = new OutputP2SH(bytes8(changeAmount), hash160(tx.bytecode));
+      require(tx.hashOutputs == hash256(genesis_return + initialReceiver + mintReceiver + change));
+    } else {
+      require(tx.hashOutputs == hash256(genesis_return + initialReceiver + mintReceiver));
+    }
+  }
+}

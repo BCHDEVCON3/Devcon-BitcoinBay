@@ -5,7 +5,13 @@
   "repository": "https://github.com/BCHDEVCON3/Devcon-BitcoinBay",
   "author": "lightswarm124 <lightswarm@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "node src/index.js"
+  },
   "dependencies": {
+    "@bitauth/libauth": "^1.17.1",
+    "@chris.troutner/bch-js": "^3.4.1",
+    "bignumber.js": "^9.0.0",
     "bitbox-sdk": "^8.11.2",
     "bitcore-lib-cash": "^8.22.2",
     "cashscript": "^0.5.1",
